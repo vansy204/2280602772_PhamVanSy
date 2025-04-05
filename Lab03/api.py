@@ -6,8 +6,8 @@ from cipher.ecc import ECCCipher
 app = Flask(__name__)
 
 ceasar = CaesarCipher()
-rsa = RSACipher()
-ecc = ECCCipher()
+rsa_cipher = RSACipher()
+ecc_cipher = ECCCipher()
 
 @app.route("/api/caesar/encrypt", methods=['POST'])
 def caesar_encrypt():
@@ -23,29 +23,34 @@ def caesar_decrypt():
         "decrypted_text": ceasar.decrypt_text(data["cipher_text"], int(data["key"]))
     })
 
-@app.route("/api/rsa/encrypt", methods=['POST'])
+@app.route("/api/rsa/encrypt", methods=["POST"])
 def rsa_encrypt():
     data = request.get_json()
-    encrypted = rsa.encrypt(data["plain_text"])
-    return jsonify({"encrypted_text": encrypted})
+    plain_text = data['plain_text']
+    encrypted_text = rsa_cipher.encrypt_text(plain_text)  # ✅ Dùng đúng tên biến và hàm
+    return jsonify({'encrypted_text': encrypted_text})
 
-@app.route("/api/rsa/decrypt", methods=['POST'])
+
+@app.route("/api/rsa/decrypt", methods=["POST"])
 def rsa_decrypt():
     data = request.get_json()
-    decrypted = rsa.decrypt(data["cipher_text"])
-    return jsonify({"decrypted_text": decrypted})
+    cipher_text = data['cipher_text']
+    decrypted_text = rsa_cipher.decrypt_text(cipher_text)  # Dùng đúng hàm trong RSACipher
+    return jsonify({'decrypted_text': decrypted_text})
 
-@app.route("/api/ecc/encrypt", methods=['POST'])
+@app.route("/api/ecc/encrypt", methods=["POST"])
 def ecc_encrypt():
     data = request.get_json()
-    encrypted = ecc.encrypt(data["plain_text"])
-    return jsonify({"encrypted_text": encrypted})
+    plain_text = data['plain_text']
+    encrypted_text = ecc_cipher.encrypt_text(plain_text)  # Gọi đúng hàm trong ECCCipher
+    return jsonify({'encrypted_text': encrypted_text})
 
-@app.route("/api/ecc/decrypt", methods=['POST'])
+@app.route("/api/ecc/decrypt", methods=["POST"])
 def ecc_decrypt():
     data = request.get_json()
-    decrypted = ecc.decrypt(data["cipher_text"])
-    return jsonify({"decrypted_text": decrypted})
+    cipher_text = data['cipher_text']
+    decrypted_text = ecc_cipher.decrypt_text(cipher_text)
+    return jsonify({'decrypted_text': decrypted_text})
 
 if __name__ == '__main__':
     app.run(debug=True)
