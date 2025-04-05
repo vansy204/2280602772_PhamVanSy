@@ -11,6 +11,6 @@ def main():
         print("Chuỗi sau khi giải mã:", decoded_string)
     except Exception as e:
         print("Lỗi:", e)
-
+        
 if __name__ == "__main__":
     main()
